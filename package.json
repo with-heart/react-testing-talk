@@ -10,12 +10,12 @@
     "help": "mdx-deck"
   },
   "keywords": [],
-  "author": "Brent Jackson",
+  "author": "Mark Chandler",
   "license": "MIT",
   "devDependencies": {
     "mdx-deck": "^1.6.7"
   },
-  "name": "testing-with-react",
+  "name": "react-testing-talk",
   "dependencies": {
     "codemirror": "^5.43.0",
     "css-loader": "^2.1.0",
