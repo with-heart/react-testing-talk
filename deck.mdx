@@ -1,23 +1,108 @@
-import { Head } from 'mdx-deck'
+import './run'
+import {Head, Appear} from 'mdx-deck'
+import {Split} from 'mdx-deck/layouts'
+import {CodeLayout} from './components/layouts'
+import {CodeBlock} from './components/code-block'
 
-export { default as theme } from './theme'
+export {default as theme} from './theme'
 
 <Head>
-  <title>Presentation Title</title>
+  <title>react-testing-talk</title>
 </Head>
 
-# Hello
+# react-testing-talk
+
+`github.com/with-heart/react-testing-talk`
 
 ---
 
-## Edit this file
+## topics
 
-To create your presentation
+- component thinking
+- what to test
+- how to test it
+- `react-testing-library`
+
+---
+
+> `the more your tests resemble the way your software is used, the more confidence they can give you`
+
+the `react-testing-library` guiding principle
+
+---
+
+## learn to think like a user
 
 ```notes
-- Create speaker notes in fenced code blocks
+- developers think about engineering aspect
+- easy get lost in details but they're implementation details
+- painted huge picture without ever asking 'what does the user need?'
 ```
 
 ---
+
+# 🤔
+
+- what outcome do i want to achieve?
+- what do i interact with to achieve that outcome?
+
+```notes
+- seems so simple
+- how often do we slow down and think about things in this way
+```
+
+---
+
+![google login form](public/google-login.png)
+
+---
+
+export default Split
+
+![google login form](public/google-login.png)
+
+### interactions
+
+- select account from dropdown
+- type password
+- click 'Next'
+
+---
+
+## user interface = public api
+
+---
+
+export default Split
+
+![google login form](public/google-login.png)
+
+### implementation details
+
+- account list loading/storage
+- password field validation method
+- 'Next' api call
+
+---
+
+## implementation details = private api
+
+they're required for the interactions to occur, but the user doesn't give a shit about them
+
+---
+
+## `and neither should you`
+
+<Appear>(at least when testing your components)</Appear>
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('raw-loader!./code/login.jsx')} />
+
+---
+
+## made with `mdx-deck`
 
 <https://github.com/jxnblk/mdx-deck>
