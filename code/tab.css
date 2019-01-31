@@ -1,0 +1,15 @@
+.Tab {
+  width: 100%;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid #dfdfdf;
+  margin: 0 0.5rem;
+  cursor: pointer;
+}
+
+.Tab:hover {
+  background-color: #f3f3f3;
+}
+
+.Tab.active {
+  border-bottom-color: #a0a0a0;
+}

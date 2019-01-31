@@ -1,7 +1,13 @@
 import './run'
 import {Head, Appear} from 'mdx-deck'
-import {Split} from 'mdx-deck/layouts'
-import {CodeLayout} from './components/layouts'
+import {Split, SplitRight} from 'mdx-deck/layouts'
+import {
+  CodeLayout,
+  SplitCodeLayout,
+  HorizontalSplit,
+} from './components/layouts'
+import {Tabs} from './code/tabs.js'
+import {contents} from './code/contents'
 import {CodeBlock} from './components/code-block'
 
 export {default as theme} from './theme'
@@ -19,6 +25,7 @@ export {default as theme} from './theme'
 ## topics
 
 - component thinking
+- what not to test
 - what to test
 - how to test it
 - `react-testing-library`
@@ -69,10 +76,6 @@ export default Split
 
 ---
 
-## user interface = public api
-
----
-
 export default Split
 
 ![google login form](public/google-login.png)
@@ -80,26 +83,277 @@ export default Split
 ### implementation details
 
 - account list loading/storage
+- password value storage
 - password field validation method
 - 'Next' api call
 
 ---
 
-## implementation details = private api
+## `interactions are public`
 
-they're required for the interactions to occur, but the user doesn't give a shit about them
+## implementation is private
 
 ---
 
-## `and neither should you`
+## why shouldn't we test implementation details?
 
-<Appear>(at least when testing your components)</Appear>
+- false negatives: can break when you refactor
+- false positives: may not fail when you break app code
+
+---
+
+export default Split
+
+<CodeBlock code={require('!raw-loader!./code/tabs.js')} />
+
+<Tabs contents={contents} />
+
+---
+
+export default SplitCodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/tabs.js')} />
+<CodeBlock code={require('raw-loader!./code/__tests_enzyme__/tabs.spec.jsx')} />
+
+---
+
+export default HorizontalSplit
+
+<Tabs contents={contents} />
+
+![all tests pass](public/tabs.pass.png)
+
+---
+
+export default Split
+
+## false negative when refactoring
+
+<CodeBlock code={require('!raw-loader!./code/tabs.refactor.js')} />
+
+---
+
+import {Tabs as RefactorTabs} from './code/tabs.refactor'
+
+export default HorizontalSplit
+
+<RefactorTabs contents={contents} />
+
+![tests failing](public/tabs.refactor.fail.png)
+
+---
+
+export default Split
+
+<CodeBlock
+  code={require('raw-loader!./code/__tests_enzyme__/tabs.refactor.spec.jsx')}
+/>
+
+![all tests pass](public/tabs.refactor.pass.png)
+
+---
+
+export default SplitRight
+
+## and now for a false positive
+
+<CodeBlock code={require('!raw-loader!./code/tabs.false-positive.js')} />
+
+---
+
+import {Tabs as FalsePositiveTabs} from './code/tabs.false-positive.js'
+
+export default HorizontalSplit
+
+<FalsePositiveTabs contents={contents} />
+
+![all tests pass](public/tabs.false-positive.png)
+
+---
+
+## so what's a `better` way to do this?
+
+---
+
+## `react-testing-library`
+
+<Appear>bet you didn't see that coming</Appear>
+
+---
+
+## exposes methods and utilities that encourage you to write tests that resemble how your React components are `used`
+
+---
+
+## utilities principles
+
+1. deals with DOM nodes rather than component instances
+2. useful for testing individual React components or full React applications
+3. implementations and APIs should be simple and flexible
+
+---
+
+<CodeBlock code={`import {render, fireEvent} from 'react-testing-library'`} />
+
+---
+
+## `render` takes jsx, renders it to DOM, and returns set of utilities targeting rendered output
+
+---
+
+## `fireEvent` fires events on DOM nodes
+
+---
+
+export default SplitCodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/tabs.js')} />
+
+<CodeBlock code={require('raw-loader!./code/tabs.spec.jsx')} />
+
+---
+
+## `debug`
+
+displays the rendered DOM output
+
+---
+
+export default Split
+
+<CodeBlock code={require('!raw-loader!./code/debug.spec.js')} />
+
+![debug dom tree](public/debug-tree.png)
+
+---
+
+## `getByLabelText`
+
+encourages form accessibility by targeting DOM node associated with label
+
+---
+
+<CodeBlock code={require('!raw-loader!./code/password.js')} />
+
+---
+
+import {Password} from './code/password'
+
+<Password onSubmit={({password}) => alert(`Your password is: ${password}!`)} />
 
 ---
 
 export default CodeLayout
 
-<CodeBlock code={require('raw-loader!./code/login.jsx')} />
+<CodeBlock code={require('!raw-loader!./code/password.spec.js')} />
+
+---
+
+## `rerender`
+
+re-renders a component with new props and points existing utilities to new node
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/max.spec.js')} />
+
+---
+
+## how do we test a `component class` method that handles logic?
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/logic.class.js')} />
+
+---
+
+## `don't`
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/logic.sfc.js')} />
+
+---
+
+## `externalize` as much logic as possible
+
+focus your components on visual output. just use javascript for the rest
+
+---
+
+## `mocking` things
+
+for external input the component output relies on, like the result of an api call
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/stuff.js')} />
+
+---
+
+import {Stuff} from './code/stuff'
+
+<Stuff />
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/stuff.spec.js')} />
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/stuff.mock.js')} />
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/stuff.result.js')} />
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/stuff.error.js')} />
+
+---
+
+## testing `Context`
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/context.js')} />
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/context.spec.js')} />
+
+---
+
+export default CodeLayout
+
+<CodeBlock code={require('!raw-loader!./code/context.tooling.spec.js')} />
+
+---
+
+## `i'm all out of content rn`
+
+check out `github.com/paypal/downshift` for complex examples
 
 ---
 
